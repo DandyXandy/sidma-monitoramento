@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIDMA — Registrar Ocorrência Ambiental</title>
+    <link rel="stylesheet" href="css/style.css">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body class="auth-body">
+
+    <div class="split-container">
+        
+        <div class="visual-panel">
+            <div class="overlay-grid"></div>
+            <div class="radar-system">
+                <div class="radar-circle c1"></div>
+                <div class="radar-circle c2"></div>
+                <div class="radar-circle c3"></div>
+                <div class="radar-sweep"></div>
+                <div class="radar-ping" style="top: 35%; left: 45%;"></div>
+                <div class="radar-ping" style="top: 60%; left: 70%;"></div>
+            </div>
+            
+            <div class="visual-content">
+                <a href="index.html" class="back-home-btn"><i class="fas fa-arrow-left"></i> Voltar à Home</a>
+                <div class="telemetry-box">
+                    <span class="status-badge"><i class="fas fa-satellite"></i> SATÉLITE SIDMA-01 ATIVO</span>
+                    <h2>Monitoramento Geoespacial</h2>
+                    <p>Suas coordenadas, raio de impacto e evidências são criptografadas e enviadas à mesa de triagem das autoridades ambientais competentes.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-panel">
+            <div class="denuncia-scroll-box">
+                
+                <form class="denuncia-form-core" id="formDenunciaAmbiental" autocomplete="off">
+                    <h2>Registrar Ocorrência</h2>
+                    <p class="form-subtitle">Forneça o máximo de informações para acelerar a fiscalização.</p>
+
+                    <div class="input-group">
+                        <label class="field-label"><i class="fas fa-user-shield"></i> Tipo de Relato</label>
+                        <div class="privacy-selector">
+                            <label class="privacy-option active" id="optAnonimo">
+                                <input type="radio" name="privacidade" value="anonimo" checked hidden>
+                                <i class="fas fa-mask"></i> Anônimo
+                            </label>
+                            <label class="privacy-option" id="optIdentificado">
+                                <input type="radio" name="privacidade" value="identificado" hidden>
+                                <i class="fas fa-id-card"></i> Identificar-me
+                            </label>
+                        </div>
+                    </div>
+
+                    <div id="dadosIdentificacao" class="hidden-fields hidden">
+                        <div class="input-group">
+                            <label for="nomeCompleto"><i class="fas fa-user"></i> Nome Completo</label>
+                            <input type="text" id="nomeCompleto" placeholder="Digite seu nome completo">
+                        </div>
+                        <div class="input-group" style="margin-top: 15px;">
+                            <label for="cpfUsuario"><i class="fas fa-address-card"></i> CPF</label>
+                            <input type="text" id="cpfUsuario" placeholder="000.000.000-00" maxlength="14">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="tituloOcorrencia"><i class="fas fa-heading"></i> Título da Ocorrência</label>
+                        <input type="text" id="tituloOcorrencia" placeholder="Ex: Queimada criminosa / Descarte de entulho" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="descricaoOcorrencia"><i class="fas fa-align-left"></i> Relato Detalhado</label>
+                        <textarea id="descricaoOcorrencia" rows="4" placeholder="Descreva o cenário detalhadamente..." required></textarea>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="localizacaoOcorrencia"><i class="fas fa-map-location-dot"></i> Localização e Raio de Impacto</label>
+                        <div class="location-wrapper">
+                            <input type="text" id="localizacaoOcorrencia" placeholder="Clique no ícone para abrir o mapa interativo" readonly required>
+                            <button type="button" id="btnGpsSmart" title="Selecionar área no Google Maps">
+                                <i class="fas fa-map-marked-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="field-label"><i class="fas fa-images"></i> Provas Visuais (Anexo)</label>
+                        <label class="file-upload" id="areaUpload">
+                            <input type="file" id="arquivoEvidencia" accept="image/*" hidden>
+                            <i class="fas fa-cloud-arrow-up icon-upload"></i>
+                            <span id="textoUpload">Clique para carregar foto da evidência</span>
+                        </label>
+                        <div id="containerPreview" class="image-preview-box hidden">
+                            <img id="imgPreview" src="" alt="Prévia do Anexo">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-submit-denuncia">
+                        <i class="fas fa-paper-plane"></i> Protocolar Denúncia
+                    </button>
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div id="mapsModal" class="modal-maps-overlay hidden">
+        <div class="modal-maps-card">
+            <div class="modal-maps-header">
+                <h3><i class="fas fa-satellite-dish"></i> Demarcar Área do Dano</h3>
+                <button type="button" id="btnCloseMaps"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-maps-instruction">
+                Arraste o marcador até o foco do problema e use a barra abaixo para definir o raio estimado do dano ambiental.
+            </div>
+            
+            <div id="googleMapContainer"></div>
+
+            <div class="modal-maps-controls">
+                <div class="range-control">
+                    <label for="radiusSlider">Raio do Dano: <span id="radiusVal">100</span>m</label>
+                    <input type="range" id="radiusSlider" min="10" max="1000" step="10" value="100">
+                </div>
+                <button type="button" id="btnConfirmarLocal">Confirmar Localização</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="globalToast" class="toast">
+        <i class="fas fa-circle-info" style="color: #00e676; font-size: 1.8rem;"></i>
+        <span id="toastMessage"></span>
+    </div>
+
+    <script src="https://maps.googleapis.com/maps/api/js?callback=initMap" async defer></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
